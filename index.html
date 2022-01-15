@@ -240,12 +240,13 @@
         }
 
         function loadAllMusic(projectID) {
-        	var dirRequest = new XMLHttpRequest();
-    		dirRequest.open('GET', 'https://api.scratch.mit.edu/projects/' + projectID + '/', true);
-    		dirRequest.send(null);
-    		dirRequest.onreadystatechange = function () {
-        		if (dirRequest.status === 200) {
-        			let json = JSON.parse(dirRequest.responseText);
+        	var dirRequest = load('https://api.scratch.mit.edu/projects/' + projectID + '/');//new XMLHttpRequest();
+    		//dirRequest.open('GET', 'https://api.scratch.mit.edu/projects/' + projectID + '/', true);
+    		//dirRequest.send(null);
+    		//dirRequest.onreadystatechange = function () {
+        		//if (dirRequest.status === 200) {
+        			console.log(dirRequest.toString());
+        			let json = JSON.parse(dirRequest);
         			console.log(json);
         			let projects = json.description.replace(/\s/g, ''); 
         			projects = projects.substring(1, projects.length-2).split(",");
@@ -279,8 +280,8 @@
         			allmusics.innerHTML = html;
 
         			cloudLoad(10);
-        		}
-        	}
+        		//}
+        	//}
 
 
         }
@@ -341,12 +342,18 @@
         }
 
         function load(url) {
+			//let response = await fetch(url, {mode: 'no-cors'});
+			//return await response.text();
+
+        	console.log("Loading " + url);
         	var request = new XMLHttpRequest();
-    		request.timeout = 4000;
-    		request.open('GET', url, true);
-    		request.send(/*null*/);
-			if (dirRequest.status === 200) {
-        		return projectRequest.responseText;
+    		request.timeout = 14000;
+    		request.open('GET', `https://cors-anywhere.herokuapp.com/`+ url, true);
+    		request.send();
+        	console.log("Status: " + request.status);
+        	console.log("ResponseText: " + request.responseText);
+			if (request.status === 200) {
+        		return request.responseText;
         	}else {
         		return "";
         	}
