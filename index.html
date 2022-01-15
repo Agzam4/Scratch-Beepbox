@@ -325,8 +325,8 @@
         		let info = json[i];
         		let name = info.user;
         		let value = info.value;
-        		if(cloudUsers.indexOf(name) == -1){
-        			let pJson = JSON.parse(load('https://api.scratch.mit.edu/projects/' + value + '/');
+        		if(cloudUsers.indexOf(name) == -1) {
+        			let pJson = JSON.parse(load('https://api.scratch.mit.edu/projects/' + value + '/'));
         			let author = pJson.author.username;
         			let title = pJson.title;
         			let image = pJson.image;
