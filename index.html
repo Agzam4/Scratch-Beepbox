@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>TheDestroyer410</title>
+	<style type="text/css">
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: sans-serif;
+			color: #EEE;
+			background-attachment: fixed;
+			/*
+			background-image: linear-gradient( 
+  				20deg, 
+  				hsl(267deg 100% 7%) 8%, 
+  				hsl(284deg 94% 14%) 33%, 
+  				hsl(302deg 88% 21%) 40%, 
+  				hsl(320deg 83% 29%) 45%, 
+  				hsl(338deg 78% 37%) 47%, 
+  				hsl(356deg 73% 46%) 49%, 
+  				hsl(25deg 68% 54%) 50%, 
+  				hsl(58deg 69% 63%) 50%, 
+  				hsl(91deg 71% 72%) 50%, 
+  				hsl(124deg 74% 81%) 50%, 
+  				hsl(157deg 82% 91%) 50%, 
+  				hsl(179deg 74% 91%) 50%, 
+  				hsl(190deg 64% 80%) 50%, 
+  				hsl(201deg 59% 70%) 50%, 
+  				hsl(212deg 57% 61%) 50%, 
+  				hsl(223deg 54% 52%) 50%, 
+  				hsl(232deg 62% 44%) 51%, 
+  				hsl(232deg 64% 36%) 52%, 
+  				hsl(233deg 65% 28%) 55%, 
+  				hsl(234deg 67% 19%) 59%, 
+  				hsl(235deg 68% 12%) 66%, 
+  				hsl(236deg 70% 4%) 87% 
+			);*/
+			background-image: linear-gradient(
+  175deg,
+  hsl(223deg 68% 6%) 0%,
+  hsl(219deg 100% 16%) 37%,
+  hsl(223deg 100% 28%) 45%,
+  hsl(233deg 81% 44%) 49%,
+  hsl(266deg 100% 50%) 50%,
+  hsl(270deg 100% 51%) 50%,
+  hsl(274deg 100% 53%) 50%,
+  hsl(277deg 100% 55%) 50%,
+  hsl(280deg 100% 57%) 50%,
+  hsl(275deg 68% 46%) 50%,
+  hsl(271deg 63% 33%) 53%,
+  hsl(267deg 60% 20%) 59%,
+  hsl(277deg 100% 6%) 86%
+);
+		}
+
+		.body {
+			padding: 10px 20px 10px 70px;
+		}
+
+		thanks {
+			display: block;
+			position: inherit;
+			width: 100%;
+			height: fit-content;
+			background: #00000055;
+			font-size: 15px;
+			line-height: 30px;
+			padding: 20px 0px;
+			bottom: 0;
+		}
+
+		thanks > text {
+			padding: 5px 20px;
+		}
+
+		a {
+			color: #608dff;
+  			transition: .2s ease-in-out;
+		}
+
+		a:hover {
+			color: #94b3ff;
+		}
+
+		::-webkit-scrollbar {
+			width: 7px;
+			background-attachment: fixed;
+			background: #000000;
+		}
+
+		::-webkit-scrollbar-thumb {
+  		background: #AAA;
+  		border-radius: 7px;
+		}
+
+		::-webkit-scrollbar-thumb:hover {
+  		background: #FFF;
+		}
+
+		music {
+			display: inline-flex;
+			border: 3px #EEE solid;
+			width: 90%;
+			height: fit-content;
+			border-radius: 15px;
+			padding: 10px 20px;
+			margin: auto;
+		}
+
+		musics {
+			display: inline-flex;
+			border: 3px #EEE solid;
+			width: 90%;
+			height: fit-content;
+			border-radius: 15px;
+			padding: 20px 20px;
+			margin: auto;
+		}
+
+		stats {
+			flex-direction:  row;
+		}
+
+		musics > img {
+			border-radius: 10px;
+		}
+
+		info {
+			display: block;
+    		padding: 0px 20px;
+    		display: flex;
+   			flex-direction: column;
+    		width: 100%;
+		}
+
+		music > iframe {
+			width: 50%;
+			border: none;
+			background: #00000030;
+		}
+
+		info > buttons {
+			padding: 10px 0px;
+			display: inline-block;
+			width: 100%;
+			height: fit-content;
+		}
+
+		buttons > a {
+			display: block;
+			padding: 5px 20px;
+			background: #673ab7; /*c472ff*/
+			width: fit-content;
+			color: #FFF;
+			text-decoration: none;
+		}
+
+		buttons > a:hover {
+			color: #FFF;
+			background: #a528ff; 
+			box-shadow: 0 0 0 3px #c472ff;
+		}
+
+		stats {
+			display: flex;
+    		flex-direction: row;
+   			align-self: auto;
+   			display: block;
+   			margin-top: auto;
+		}
+
+		likes {
+			padding-left: 10px;
+			display: inline-flex;
+    		font-size: 20px;
+    		user-select: none !important;
+		}
+
+		faves {
+			padding-left: 10px;
+			display: inline-flex;
+    		font-size: 20px;
+    		user-select: none !important;
+		}
+
+		likes::before {
+			padding-right: 2px;
+			display: flex;
+			content: url(https://scratch.mit.edu/svgs/project/love-red.svg);
+		}
+
+		faves::before {
+			padding-right: 2px;
+			display: flex;
+			content: url(https://scratch.mit.edu/svgs/project/fav-yellow.svg);
+		}
+
+		.author {
+			color: #CCC;
+			font-size: 15px;
+			text-decoration: none;
+  			transition: .2s ease-in-out;
+  			cursor: pointer;
+		}
+
+		.author:hover {
+			color: #EEE;
+		}
+
+		stats > a {
+			display: inline-flex;
+			padding: 5px 20px;
+			background: #673ab7;
+			width: fit-content;
+			color: #FFF;
+			text-decoration: none;
+		}
+
+		stats > a:hover {
+			color: #FFF;
+			background: #a528ff; 
+			box-shadow: 0 0 0 3px #c472ff;
+		}
+
+		.author::before {
+			content: "by ";
+		}
+
+		statspos {
+    		vertical-align: middle;
+    		float: right;
+		}
+	</style>
+	<script type="text/javascript">
+
+		let mainProjectID = 628533426;
+		window.onload = function() {
+			loadAllMusic(mainProjectID);
+        }
+
+        function loadAllMusic(projectID) {
+        	var dirRequest = new XMLHttpRequest();
+    		dirRequest.open('GET', 'https://api.scratch.mit.edu/projects/' + projectID + '/', true);
+    		dirRequest.send(null);
+    		dirRequest.onreadystatechange = function () {
+        		if (dirRequest.status === 200) {
+        			let json = JSON.parse(dirRequest.responseText);
+        			console.log(json);
+        			let projects = json.description.replace(/\s/g, ''); 
+        			projects = projects.substring(1, projects.length-2).split(",");
+
+        			let html = "";
+
+        			for (var i = 0; i < projects.length; i++) {
+        				let project = projects[i];
+
+    					let pJson = JSON.parse(load('https://api.scratch.mit.edu/projects/' + project + '/'));
+
+        				console.log(pJson);
+
+        				let author = pJson.author.username;
+        				let title = pJson.title;
+        				let image = pJson.image;
+        				let stats = pJson.stats;
+        				let description = pJson.description;
+
+        				console.log(title);
+
+        				let instructions = pJson.instructions;
+
+        				html += createMusicsBlock(image, title, description, stats);
+        			}
+
+
+            		// loadMusic(dirRequest.responseText);
+
+        			let allmusics = document.getElementById('allmusics');
+        			allmusics.innerHTML = html;
+
+        			cloudLoad(10);
+        		}
+        	}
+
+
+        }
+
+        function createMusicsBlock(image, title, description, stats) {
+        	return `
+						<musics>
+							<img src="` + image.replace("480x360", "240x180") + `"></img>
+								<info>
+									<h1>` + title + `</h1>
+										<a class="author" href="https://scratch.mit.edu/users/` + author + `/">` + author + `</a><br>
+										` + description + `
+										<stats>
+										<a onClick="loadMusicList(` + project + `)">Open List</a>
+										<statspos>
+										<likes>` + stats.loves + `</likes>
+										<faves>` + stats.favorites + `</faves>
+								</statspos>
+							</stats>
+						</info>
+						<br>
+						</musics>
+						<br>
+						<br>
+        				`
+        }
+
+        let cloutStart = 0;
+        let cloudUsers = [];
+
+        function cloudLoad(count) {
+        	let data = load(`https://clouddata.scratch.mit.edu/logs?projectid=` 
+        		+ mainProjectID 
+        		+ `&offset=` + cloutStart + `&limit=` + count);
+        	cloutStart += count;
+        	
+        	let json = JSON.parse(data);
+
+        	let allmusics = document.getElementById('allmusics');
+        	let html = allmusics.innerHTML;
+        	for (var i = 0; i < json.length; i++) {
+        		let info = json[i];
+        		let name = info.user;
+        		let value = info.value;
+        		if(cloudUsers.indexOf(name) == -1){
+        			let pJson = JSON.parse(load('https://api.scratch.mit.edu/projects/' + value + '/');
+        			let author = pJson.author.username;
+        			let title = pJson.title;
+        			let image = pJson.image;
+        			let stats = pJson.stats;
+        			let description = pJson.description;
+        			html += createMusicsBlock(image, title, description, stats);
+        			cloudUsers.push(name);
+        		}
+        	}
+
+        	allmusics.innerHTML = html;
+        }
+
+        function load(url) {
+        	var request = new XMLHttpRequest();
+    		request.timeout = 4000;
+    		request.open('GET', url, true);
+    		request.send(/*null*/);
+			if (dirRequest.status === 200) {
+        		return projectRequest.responseText;
+        	}else {
+        		return "";
+        	}
+        }
+
+		function httpRequest(address, reqType, asyncProc) {
+  			var req = new XMLHttpRequest();
+  			if (asyncProc) { 
+    			req.onreadystatechange = function() { 
+      				if (this.readyState == 4) {
+        				asyncProc(this);
+      				} 
+    			};
+  			} else { 
+    			req.timeout = 4000;
+  			}
+    		projectRequest.open('GET', address, false);
+  			req.send();
+  			return req;
+		}
+
+        function loadMusicList(projectID) {
+    		let json = JSON.parse(load('https://api.scratch.mit.edu/projects/' + project + '/'));
+
+        	let instructions = json.instructions.replaceAll("(", `"`).replaceAll(")", `"`);
+        	instructions = instructions.substring(1, instructions.length-1);
+        	instructions = instructions.replace(/\s/g, '').split("},{");
+        	console.log(instructions);
+
+        	let html = "";
+        	for (var i = 0; i < instructions.length; i++) {
+        		console.log(instructions[i]);
+        		let musicJSON = JSON.parse("{" + instructions[i] + "}");
+
+        		let songUrl = musicJSON.url;
+
+        		if(songUrl.startsWith("https://jummbus.bitbucket.io/") 
+        			|| 	songUrl.startsWith("https://www.beepbox.co/") 
+        			||	songUrl.startsWith("https://beepbox.co/") 
+        			) {
+
+
+        		let songData = songUrl.replace("https://", "");
+        		console.log("songUrl: " + songUrl);
+        		console.log("songData: " + songData);
+        		if(songData.startsWith("www.")) {
+        			songData = songData.replace("www.", "");
+        		}
+        		if(songData.startsWith("beepbox.co")) {
+        			songData = songData.replace("beepbox.co", "");
+        		}
+        		if(songData.startsWith("jummbus.bitbucket.io")) songData = songData.replace("jummbus.bitbucket.io", "");
+        		if(songData.startsWith("/#")) songData = songData.replace("/#", "");
+
+        		let player = "";
+
+        		if(songUrl.startsWith("https://jummbus.bitbucket.io/")) {
+        			player = "https://jummbus.bitbucket.io/player/#song=" + songData;
+        		}
+        		if(songUrl.startsWith("https://beepbox.co/") || songUrl.startsWith("https://www.beepbox.co/")) {
+        			player = "https://www.beepbox.co/player/#song=" + songData;
+        		}
+        		console.log(player);
+
+
+        		html += 
+        		`
+        		<music>
+					<iframe src="` + player + `"></iframe>
+					<info>
+						<h1>` + musicJSON.name.replaceAll("_", " ") + `</h1>
+						` + musicJSON.info.replaceAll("_", " ") + `
+						<buttons>
+							<a href="` + songUrl + `">BeepBox</a>
+						</buttons>
+					</info>
+				</music>
+				<br>
+				<br>
+        		`;
+        		}
+
+
+        		let musiclist = document.getElementById('musiclist');
+        		musiclist.innerHTML = html;
+        	}
+
+        }
+	</script>
+</head>
+<body>
+	<div class="body">
+		<h1 class="title">Welcome To Scratch-Beepbox Website</h1>
+		<br><br>
+		<h1>Music Lists:</h1>
+		Add your music <a href="https://scratch.mit.edu/projects/628533426">here</a>
+		<br><br>
+		<div id="allmusics">
+		</div>
+		<br>
+		<br>
+		<h1>Cloud Music:</h1>
+		<br>
+		<br>
+		<div id="cloudmusics">
+		</div>
+		<br>
+		<br>
+		<h1>Music:</h1>
+		<br>
+		<br>
+		<div id="musiclist">
+		<!-- <music>
+			<iframe src="">
+			</iframe>
+			<info>
+				<h1>Music 1</h1>
+				Music 1 on BeepBox
+				<buttons>
+					<a href="https://beepbox.co/">BeepBox</a>
+				</buttons>
+			</info>
+		</music> -->
+		</div>
+		<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+	</div>
+	<thanks>
+		<text>Author of website: <a href="https://www.youtube.com/channel/UC1WDVmqsb2gQZH08G86cP8g">Agzam4</a></text><br>
+		<text>Hosted on <a href="https://github.com/">GitHub</a></text>
+		<br>
+	</thanks>
+</body>
+</html>
