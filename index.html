@@ -2,6 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
+	<meta name="Access-Control-Allow-Origin" content="*">
 	<title>Scratch-Beepbox</title>
 	<style type="text/css">
 		body {
@@ -234,66 +235,65 @@
 	</style>
 	<script type="text/javascript">
 
-		let mainProjectID = 628533426;
+		let mainProjectID = 628533426; // https://api.scratch.mit.edu/projects/628533426/'
+
 		window.onload = function() {
 			loadAllMusic(mainProjectID);
         }
 
         function loadAllMusic(projectID) {
-        	var dirRequest = load('https://api.scratch.mit.edu/projects/' + projectID + '/');//new XMLHttpRequest();
-    		//dirRequest.open('GET', 'https://api.scratch.mit.edu/projects/' + projectID + '/', true);
-    		//dirRequest.send(null);
-    		//dirRequest.onreadystatechange = function () {
-        		//if (dirRequest.status === 200) {
-        			console.log(dirRequest.toString());
-        			let json = JSON.parse(dirRequest);
-        			console.log(json);
-        			let projects = json.description.replace(/\s/g, ''); 
-        			projects = projects.substring(1, projects.length-2).split(",");
+        	load('api.scratch.mit.edu/projects/' + projectID + '/').then(dirRequest => {
+				let json = JSON.parse(dirRequest);
+        		console.log(json);
+        		let projects = json.description.replace(/\s/g, ''); 
+        		projects = projects.substring(1, projects.length-1).split(",");
 
-        			let html = "";
+        		let html = "";
 
-        			for (var i = 0; i < projects.length; i++) {
-        				let project = projects[i];
 
-    					let pJson = JSON.parse(load('https://api.scratch.mit.edu/projects/' + project + '/'));
+        		for (var i = 0; i < projects.length; i++) {
+        			let project = projects[i];
+        			console.log("PROJECT: " + project);
+        			let ii = i;
+        			load('api.scratch.mit.edu/projects/' + project + '/').then(request => {
 
-        				console.log(pJson);
+    					let pJson = JSON.parse(request);
+        				console.log("Project JSON: " + pJson);
 
         				let author = pJson.author.username;
         				let title = pJson.title;
         				let image = pJson.image;
         				let stats = pJson.stats;
-        				let description = pJson.description;
+        				let description = pJson.instructions;
+        				let index = pJson.description;
 
-        				console.log(title);
+        				if(index.indexOf("beepbox") != -1 || index.indexOf("jummbus.bitbucket.io") != -1) {
 
-        				let instructions = pJson.instructions;
+        					console.log(title);
 
-        				html += createMusicsBlock(image, title, description, stats);
-        			}
+        					let instructions = pJson.instructions;
 
-
-            		// loadMusic(dirRequest.responseText);
-
-        			let allmusics = document.getElementById('allmusics');
-        			allmusics.innerHTML = html;
-
-        			cloudLoad(10);
-        		//}
-        	//}
-
-
+        					html += createMusicsBlock(image, title, description, stats, author, project);
+        					let allmusics = document.getElementById('allmusics');
+        					allmusics.innerHTML = html;
+        				}else {
+        					console.log("URL NOT FOUND");
+        				}
+        			});
+        		}
+        		cloudLoad(10);
+        	});
         }
 
-        function createMusicsBlock(image, title, description, stats) {
+        function createMusicsBlock(image, title, description, stats, author, project) {
         	return `
-						<musics>
+						<musics id="music` + project + `">
 							<img src="` + image.replace("480x360", "240x180") + `"></img>
 								<info>
 									<h1>` + title + `</h1>
 										<a class="author" href="https://scratch.mit.edu/users/` + author + `/">` + author + `</a><br>
 										` + description + `
+										<br>
 										<stats>
 										<a onClick="loadMusicList(` + project + `)">Open List</a>
 										<statspos>
@@ -313,42 +313,96 @@
         let cloudUsers = [];
 
         function cloudLoad(count) {
-        	let data = load(`https://clouddata.scratch.mit.edu/logs?projectid=` 
+        	load(`clouddata.scratch.mit.edu/logs?projectid=` 
         		+ mainProjectID 
-        		+ `&offset=` + cloutStart + `&limit=` + count);
-        	cloutStart += count;
+        		+ `&offset=` + cloutStart + `&limit=` + count).then(data => {
+
+        		cloutStart += count;
         	
-        	let json = JSON.parse(data);
+        		let json = JSON.parse(data);
 
-        	let allmusics = document.getElementById('allmusics');
-        	let html = allmusics.innerHTML;
-        	for (var i = 0; i < json.length; i++) {
-        		let info = json[i];
-        		let name = info.user;
-        		let value = info.value;
-        		if(cloudUsers.indexOf(name) == -1) {
-        			let pJson = JSON.parse(load('https://api.scratch.mit.edu/projects/' + value + '/'));
-        			let author = pJson.author.username;
-        			let title = pJson.title;
-        			let image = pJson.image;
-        			let stats = pJson.stats;
-        			let description = pJson.description;
-        			html += createMusicsBlock(image, title, description, stats);
-        			cloudUsers.push(name);
+        		let allmusics = document.getElementById('cloudmusics');
+        		let html = allmusics.innerHTML;
+        		for (var i = 0; i < json.length; i++) {
+        			let info = json[i];
+        			let name = info.user;
+        			let value = info.value;
+        			if(cloudUsers.indexOf(name) == -1) {
+						try {
+							console.log("Cloud Loading " + value + "...");
+        					load('api.scratch.mit.edu/projects/' + value + '/').then(loaded => {
+        						let pJson = JSON.parse(loaded.toString());
+								console.log("Loaded: " + pJson );
+        						if(pJson.code != "NotFound") {
+        							let index = pJson.description;
+        							if(index.indexOf("beepbox") != -1 || index.indexOf("jummbus.bitbucket.io") != -1) {
+										console.log("OK");
+        								cloudUsers.push(name);
+        								let author = pJson.author.username;
+        								let title = pJson.title;
+        								let image = pJson.image;
+        								let stats = pJson.stats;
+        								let description = pJson.instructions;
+        								let allmusics = document.getElementById('cloudmusics');
+        								html += createMusicsBlock(image, title, description, stats, author, value);
+        								allmusics.innerHTML = html;
+        							}else {
+										console.log("PROJECT NOT HAS URL");
+        							}
+        						}else {
+									console.log("ERROR");
+        						}
+        					});
+        				} catch (e) {
+    					}			
+        			}
         		}
-        	}
-
         	allmusics.innerHTML = html;
+        	});
         }
+
+
+		function isUrlExists(url)
+		{
+			try {
+    			var http = new XMLHttpRequest();
+    			http.open('HEAD', "https://cors.9gr.repl.co/" + url, false);
+    			http.send();
+    			return http.status==200;
+    		} catch (e) {
+    			return false;
+    		}
+		}
 
         function load(url) {
 			//let response = await fetch(url, {mode: 'no-cors'});
 			//return await response.text();
+			url = "https://cors.9gr.repl.co/" + url;
 
+        	return fetch(url).then(response => response.text())
+			.catch((e) => {
+            	console.log('Error: ' + e.message);
+            	console.log(e.response);
+        	});
+        	;
+			/*
+			.then(response => {
+      			if (response.ok) {
+        			return response.json().then(response => ({ response }));
+      			}
+      			return response.json().then(error => ({ error }));
+    		});*/
+
+			//fetch(url).then(response => {
+        	//	return response.json().then(response => ({ response }));
+    		//});
+
+			/*
         	console.log("Loading " + url);
         	var request = new XMLHttpRequest();
+        	//request.addHeader("Access-Control-Allow-Origin", "*");
     		request.timeout = 14000;
-    		request.open('GET', `https://cors-anywhere.herokuapp.com/`+ url, true);
+    		request.open('GET', url, true);
     		request.send();
         	console.log("Status: " + request.status);
         	console.log("ResponseText: " + request.responseText);
@@ -356,8 +410,20 @@
         		return request.responseText;
         	}else {
         		return "";
-        	}
+        	}*/
         }
+
+        /*
+let response = await fetch('https://api.scratch.mit.edu/projects/628533426/', {
+  method: 'GET',
+   Content-Type: 'application/json',
+    url: "https://api.scratch.mit.edu/projects/628533426/",
+    type: "GET",
+    crossDomain: true,
+    dataType: "json"
+  }
+});
+        */
 
 		function httpRequest(address, reqType, asyncProc) {
   			var req = new XMLHttpRequest();
@@ -375,72 +441,79 @@
   			return req;
 		}
 
+		function isInt(value) {
+			return parseInt(value) == value;
+		}
+
         function loadMusicList(projectID) {
-    		let json = JSON.parse(load('https://api.scratch.mit.edu/projects/' + project + '/'));
+        	console.log("LOADING PROJECT LIST: " + projectID)
+        	load('api.scratch.mit.edu/projects/' + projectID + '/').then(request => {
+    			let json = JSON.parse(request);
+    			let instructions = json.description.replaceAll("(", `"`).replaceAll(")", `"`);
+        		instructions = instructions.substring(1, instructions.length-1);
+        		instructions = instructions.replace(/\s/g, '').split("},{");
+        		console.log(instructions);
 
-        	let instructions = json.instructions.replaceAll("(", `"`).replaceAll(")", `"`);
-        	instructions = instructions.substring(1, instructions.length-1);
-        	instructions = instructions.replace(/\s/g, '').split("},{");
-        	console.log(instructions);
+        		let html = "";
+        		for (var i = 0; i < instructions.length; i++) {
+        			console.log(instructions[i]);
+        			let musicJSON = JSON.parse("{" + instructions[i] + "}");
 
-        	let html = "";
-        	for (var i = 0; i < instructions.length; i++) {
-        		console.log(instructions[i]);
-        		let musicJSON = JSON.parse("{" + instructions[i] + "}");
+        			console.log(instructions[i].indexOf("beepbox") + " " + instructions[i].indexOf("jummbus.bitbucket.io"));
+        			if(instructions[i].indexOf("beepbox") != -1 
+        				|| instructions[i].indexOf("jummbus.bitbucket.io") != -1) {
 
-        		let songUrl = musicJSON.url;
+        			let songUrl = musicJSON.url;
 
-        		if(songUrl.startsWith("https://jummbus.bitbucket.io/") 
-        			|| 	songUrl.startsWith("https://www.beepbox.co/") 
-        			||	songUrl.startsWith("https://beepbox.co/") 
-        			) {
+        			if(songUrl.startsWith("https://jummbus.bitbucket.io/") 
+        				|| 	songUrl.startsWith("https://www.beepbox.co/") 
+        				||	songUrl.startsWith("https://beepbox.co/") 
+        				) {
+
+        				let songData = songUrl.replace("https://", "");
+        				console.log("songUrl: " + songUrl);
+        				console.log("songData: " + songData);
+        				if(songData.startsWith("www.")) {
+        					songData = songData.replace("www.", "");
+        				}
+        				if(songData.startsWith("beepbox.co")) {
+        					songData = songData.replace("beepbox.co", "");
+        				}
+        				if(songData.startsWith("jummbus.bitbucket.io")) songData = songData.replace("jummbus.bitbucket.io", "");
+        				if(songData.startsWith("/#")) songData = songData.replace("/#", "");
+
+        				let player = "";
+
+        				if(songUrl.startsWith("https://jummbus.bitbucket.io/")) {
+        					player = "https://jummbus.bitbucket.io/player/#song=" + songData;
+        				}
+        				if(songUrl.startsWith("https://beepbox.co/") || songUrl.startsWith("https://www.beepbox.co/")) {
+        					player = "https://www.beepbox.co/player/#song=" + songData;
+        				}
+        				console.log(player);
 
 
-        		let songData = songUrl.replace("https://", "");
-        		console.log("songUrl: " + songUrl);
-        		console.log("songData: " + songData);
-        		if(songData.startsWith("www.")) {
-        			songData = songData.replace("www.", "");
+        				html += 
+        				`
+        				<music>
+							<iframe src="` + player + `"></iframe>
+							<info>
+								<h1>` + musicJSON.name.replaceAll("_", " ") + `</h1>
+								` + musicJSON.info.replaceAll("_", " ") + `
+								<buttons>
+									<a href="` + songUrl + `">BeepBox</a>
+								</buttons>
+							</info>
+						</music>
+						<br>
+						<br>
+        				`;
+        			}
+        			let musiclist = document.getElementById('musiclist');
+        			musiclist.innerHTML = html;
+        			}
         		}
-        		if(songData.startsWith("beepbox.co")) {
-        			songData = songData.replace("beepbox.co", "");
-        		}
-        		if(songData.startsWith("jummbus.bitbucket.io")) songData = songData.replace("jummbus.bitbucket.io", "");
-        		if(songData.startsWith("/#")) songData = songData.replace("/#", "");
-
-        		let player = "";
-
-        		if(songUrl.startsWith("https://jummbus.bitbucket.io/")) {
-        			player = "https://jummbus.bitbucket.io/player/#song=" + songData;
-        		}
-        		if(songUrl.startsWith("https://beepbox.co/") || songUrl.startsWith("https://www.beepbox.co/")) {
-        			player = "https://www.beepbox.co/player/#song=" + songData;
-        		}
-        		console.log(player);
-
-
-        		html += 
-        		`
-        		<music>
-					<iframe src="` + player + `"></iframe>
-					<info>
-						<h1>` + musicJSON.name.replaceAll("_", " ") + `</h1>
-						` + musicJSON.info.replaceAll("_", " ") + `
-						<buttons>
-							<a href="` + songUrl + `">BeepBox</a>
-						</buttons>
-					</info>
-				</music>
-				<br>
-				<br>
-        		`;
-        		}
-
-
-        		let musiclist = document.getElementById('musiclist');
-        		musiclist.innerHTML = html;
-        	}
-
+        	});
         }
 	</script>
 </head>
@@ -455,7 +528,7 @@
 		</div>
 		<br>
 		<br>
-		<h1>Cloud Music:</h1>
+		<h1>&#9729; Cloud Music: &#9729;</h1>
 		<br>
 		<br>
 		<div id="cloudmusics">
@@ -466,17 +539,7 @@
 		<br>
 		<br>
 		<div id="musiclist">
-		<!-- <music>
-			<iframe src="">
-			</iframe>
-			<info>
-				<h1>Music 1</h1>
-				Music 1 on BeepBox
-				<buttons>
-					<a href="https://beepbox.co/">BeepBox</a>
-				</buttons>
-			</info>
-		</music> -->
+			Click to "Open List"
 		</div>
 		<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 	</div>
