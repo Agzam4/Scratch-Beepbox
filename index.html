@@ -79,10 +79,12 @@
 		a {
 			color: #608dff;
   			transition: .2s ease-in-out;
+			text-decoration: none;
 		}
 
 		a:hover {
-			color: #94b3ff;
+			color: #FFF;/*#94b3ff;*/
+    		text-shadow: 0px 0px 10px #94b3ff;
 		}
 
 		::-webkit-scrollbar {
@@ -102,22 +104,41 @@
 
 		music {
 			display: inline-flex;
-			border: 3px #EEE solid;
+			border: 3px #CCC solid;
 			width: 90%;
 			height: fit-content;
 			border-radius: 15px;
 			padding: 10px 20px;
 			margin: auto;
+			background: #00000030;
+  			animation: show 2.5s forwards;
 		}
 
 		musics {
 			display: inline-flex;
-			border: 3px #EEE solid;
+			border: 3px #CCC solid;
 			width: 90%;
 			height: fit-content;
 			border-radius: 15px;
 			padding: 20px 20px;
 			margin: auto;
+			background: #00000060;
+
+			background-attachment: fixed;
+			background-blend-mode: color-burn;
+
+
+  			animation: show 2.5s forwards;
+		}
+
+		@keyframes show {
+  			0% {
+  				opacity: 0;
+  			}
+
+  			100% {
+  				opacity: 1;
+  			}
 		}
 
 		stats {
@@ -251,6 +272,146 @@
     		user-select: none !important;
 		}
 
+		loadingbox {
+ 	 		position: relative;
+ 	 		display: inline-flex;
+			width: 90%;
+  			height: 40vh;
+    		background: #00000030;
+    		padding: 10px;
+    		box-shadow: 0px 0px 3px 0px #00000080;
+    		border-radius: 15px;
+    		border: 3px #EEEEEE33 solid;
+   			padding: 20px 20px;
+		}
+	
+		loading {
+    		position: absolute;
+    		display: block;
+    		height: 60px;
+    		width: 60px;
+    		border: 3px solid transparent;
+    		border-top-color: #FFF;
+    		top:0;
+    		bottom: 0;
+    		left: 0;
+    		right: 0;
+    		margin: auto;
+    		border-radius: 50%;
+    		animation: spin 2s linear infinite;
+		}
+
+		loading:before, loading:after{
+			content:'';
+      		position: absolute;
+      		border: 3px solid transparent;
+      		border-radius: 50%;
+    	}
+    
+    	loading:before{
+      		border-top-color: #0090FF;
+      		top: -12px;
+      		left: -12px;
+      		right: -12px;
+      		bottom: -12px;
+      		animation: spin 3s linear infinite;
+    	}
+    
+    	loading:after{
+      		border-top-color: #9000FF;
+      		top: 6px;
+      		left: 6px;
+      		right: 6px;
+      		bottom: 6px;  
+      		animation: spin 4s linear infinite;
+    	}
+
+		@keyframes spin{
+  			0% {
+  				transform: rotate(0deg);
+  			}
+  			100% {
+  				transform: rotate(360deg);
+  			}
+		}
+
+		.body > h1 {
+			width: 90%;
+			border-bottom: 3px #AAA solid;
+			padding: 0px 35px 0px 5px;
+		}
+
+		name {
+			background: #FFFFFF30;
+			padding: 2px 4px;
+			border-radius: 3px;
+		}
+
+		p {
+			font-size: 15px;
+			line-height: 25px;
+			margin-top: 10px;
+			margin-bottom: 20px;
+			margin-left: 10px;
+		}
+
+		h2, h3 {
+			line-height: 25px;
+			padding: 0px 0px 0px 0px;
+			margin-bottom: 5px;
+			margin-left: 1px;
+		}
+
+		nav {
+			display: block;
+			color: #FFF;
+    		background-attachment: fixed;
+    		background: linear-gradient(175deg, #03112c 1%, #13001f 60%);
+    		box-shadow: 0 0 15px 0px #c145ff;
+		}
+
+		nav > logo {
+			display: inline-block;
+			/*background: #6C39F8;*/
+			padding: 20px 30px;
+			color: #FFFFFF;
+			text-shadow: 0px 0px 30px #ef8aff;
+    		transition: .2s ease-in-out;
+    		box-shadow: inset 0px -2px 0px #EEE;
+    		background-attachment: fixed;
+    		background: linear-gradient(175deg, #03112c 1%, #13001f 60%);	
+		}
+
+		logo:hover {
+    		filter: brightness(2.0);
+		}
+		/*logo:after {
+			z-index: 999;
+			color: #FFF;
+			font-size: 30px;
+			display: block;
+			position: absolute;
+			margin-left: -7px;
+			margin-top: -27px;
+		}*/
+
+		nav > a {
+			display: inline-block;
+			padding: 20px 30px;
+    		box-shadow: inset 0px -2px 0px #fff;
+    		border-bottom-width: 0px;
+    		border-top-width: 3px;
+    		background-attachment: fixed;
+    		background: linear-gradient(175deg, #03112c 1%, #13001f 60%);	
+			text-shadow: 0px 0px 30px #ef8aff;
+			color: #EEE;	
+		}
+
+		nav > a:hover {
+    		box-shadow: inset 0px -2px 0px #EEE;
+    		filter: brightness(2.0);
+		}
+
 	</style>
 	<script type="text/javascript">
 
@@ -258,6 +419,23 @@
 
 		window.onload = function() {
 			loadAllMusic(mainProjectID);
+
+			const links = document.querySelectorAll('a[href*="#"]');
+
+			for (const link of links) {
+			  	link.addEventListener("click", clickHandler);
+			}
+
+			function clickHandler(e) {
+ 		 		e.preventDefault();
+		  		const href = this.getAttribute("href");
+  				const offsetTop = document.querySelector(href).offsetTop - 20;
+
+  				scroll({
+    				top: offsetTop,
+    				behavior: "smooth"
+  				});
+			}
         }
 
         function loadAllMusic(projectID) {
@@ -336,12 +514,16 @@
         		+ mainProjectID 
         		+ `&offset=` + cloutStart + `&limit=` + count).then(data => {
 
+        		let allmusics = document.getElementById('cloudmusics');
+        		let html = allmusics.innerHTML;
+        		if(cloutStart == 0) {
+        			html = "";
+        		}
+
         		cloutStart += count;
         	
         		let json = JSON.parse(data);
 
-        		let allmusics = document.getElementById('cloudmusics');
-        		let html = allmusics.innerHTML;
         		for (var i = 0; i < json.length; i++) {
         			let info = json[i];
         			let name = info.user;
@@ -532,40 +714,80 @@ let response = await fetch('https://api.scratch.mit.edu/projects/628533426/', {
         			musiclist.innerHTML = html;
         			}
         		}
+
+        		const href = document.getElementById('music-h1');
+  				const offsetTop = href.offsetTop - 20;
+
+  				scroll({
+    				top: offsetTop,
+    				behavior: "smooth"
+  				});
         	});
         }
 	</script>
 </head>
 <body>
+	<nav>
+		<a href="https://scratch.mit.edu/projects/628533426/">Scratch-Beepbox</a>
+		<a href="#music-list-h1">Music list</a>
+		<a href="#cloud-music-h1">Cloud music list</a>
+		<a href="#music-h1">Music</a>
+		<a href="#about-h1">About</a>
+	</nav>
 	<div class="body">
+		<br>
+		<br>
+		<br>
 		<h1 class="title">Welcome To Scratch-Beepbox Website</h1>
-		<br><br>
-		<h1>Music Lists:</h1>
-		Add your music <a href="https://scratch.mit.edu/projects/628533426">here</a>
-		<br><br>
+		<p>
+			<h3>How add music here:</h3>
+			You can add your music <a href="https://scratch.mit.edu/projects/628533426">here</a><br>
+			more information in <a href="#about-h1">About</a>
+		</p>
+		<br>
+		<h1 id="music-list-h1">Music Lists:</h1>
 		<div id="allmusics">
+			<loadingbox>
+			<loading></loading>
+			</loadingbox>
 		</div>
 		<br>
 		<br>
-		<h1>&#9729; Cloud Music: &#9729;</h1>
-		<br>
-		<br>
+		<h1 id="cloud-music-h1">&#9729; Cloud Music: &#9729; </h1>
 		<div id="cloudmusics">
+			<loadingbox>
+			<loading></loading>
+			</loadingbox>
 		</div>
 		<br>
 		<br>
-		<h1>Music:</h1>
-		<br>
-		<br>
-		<div id="musiclist">
+		<h1 id="music-h1">Music:</h1>
+		<div id="musiclist" style="color: #CCC; font-size: 75%;">
 			Click to "Open List"
 		</div>
-		<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-	</div>
-	<thanks>
-		<text>Author of website: <a href="https://www.youtube.com/channel/UC1WDVmqsb2gQZH08G86cP8g">Agzam4</a></text><br>
+		<br><br>
+		<h1 id="about-h1">About:</h1>
+		<h2>How to add music:</h2>
+		<h3><name>&#9729; Cloud Music &#9729;</name></h3>
+		<p>
+				1. Create new project<br>
+				2. In <name>DESCRIPTION</name> write generated code <a href="https://scratch.mit.edu/projects/628533426/">generate code here</a><br>
+				3. Copy URL of your project<br>
+				4. Click <name>Add</name> in <a href="https://scratch.mit.edu/projects/628533426/">this project</a><br> and then paste code<br>
+				5. Reload this page<br>
+		</p>
+			<h3><name>Music Lists</name></h3>
+		<p>
+				1. Create new project<br>
+				2. In <name>DESCRIPTION</name> write generated code <br>
+				3. Write URL of your project in comments in <a href="https://scratch.mit.edu/projects/628533426/">this project</a><br>
+				4. Wait until I add your project to the site<br>
+		</p>
+		<br><br>
+		<text>My Youtube: <a href="https://www.youtube.com/channel/UC1WDVmqsb2gQZH08G86cP8g">Agzam4</a></text><br>
 		<text>Hosted on <a href="https://github.com/">GitHub</a></text>
-		<br>
-	</thanks>
+		<br><br>
+		<br><br>
+	</div>
 </body>
 </html>
