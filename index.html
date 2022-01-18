@@ -56,9 +56,6 @@
 );
 		}
 
-		.body {
-			padding: 10px 20px 10px 70px;
-		}
 
 		thanks {
 			display: block;
@@ -335,6 +332,10 @@
   			}
 		}
 
+		.body {
+			padding: 10px 20px 10px 70px;
+		}
+
 		.body > h1 {
 			width: 90%;
 			border-bottom: 3px #AAA solid;
@@ -409,6 +410,30 @@
 
 		nav > a:hover {
     		box-shadow: inset 0px -2px 0px #EEE;
+    		filter: brightness(2.0);
+		}
+
+		loadmore {
+			display: block;
+			color: #EEE;
+			background: #00000050;
+			border-radius: 5px;
+			padding: 10px 20px;
+			width: fit-content;
+			transition: .2s ease-in-out;
+			cursor: pointer;
+		}
+
+		.loadmore {
+			text-align: center;
+			align-content: center;
+		}
+
+		loadmore:hover {
+			background: #00000090;
+			color: #FFF;
+			text-shadow: 0px 0px 1px #FFF;
+			box-shadow: 0px 0px 1px #000;
     		filter: brightness(2.0);
 		}
 
@@ -509,6 +534,10 @@
         let cloutStart = 0;
         let cloudUsers = [];
 
+        function loadmore() {
+        	cloudLoad(10);
+        }
+
         function cloudLoad(count) {
         	load(`clouddata.scratch.mit.edu/logs?projectid=` 
         		+ mainProjectID 
@@ -581,7 +610,7 @@
 			url = "https://cors.9gr.repl.co/" + url;
 
         	return fetch(url).then(response => response.text())
-			.catch((e) => {
+							.catch((e) => {
             	console.log('Error: ' + e.message);
             	console.log(e.response);
         	});
@@ -740,6 +769,7 @@ let response = await fetch('https://api.scratch.mit.edu/projects/628533426/', {
 		<br>
 		<h1 class="title">Welcome To Scratch-Beepbox Website</h1>
 		<p>
+			<h2><a href="https://agzam4.github.io/Scratch-Beepbox/discuss">Discuss parsing</a></h2>
 			<h3>How add music here:</h3>
 			You can add your music <a href="https://scratch.mit.edu/projects/628533426">here</a><br>
 			more information in <a href="#about-h1">About</a>
@@ -759,6 +789,7 @@ let response = await fetch('https://api.scratch.mit.edu/projects/628533426/', {
 			<loading></loading>
 			</loadingbox>
 		</div>
+		<div class="loadmore"><loadmore onClick="loadmore()">Load more</loadmore></div>
 		<br>
 		<br>
 		<h1 id="music-h1">Music:</h1>

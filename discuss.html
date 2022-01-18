@@ -3,6 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="/Scratch-Beepbox/favicon.png">
 	<title>Discuss parsing</title>
 	<style type="text/css">
 		body {
@@ -223,8 +224,10 @@
     		border: 3px #EEEEEE33 solid;
    			padding: 10px 10px;
    			border-radius: 5px;
+      		animation: show 2.5s forwards;
    			/*background: linear-gradient(175deg, #03112c 1%, #13001f 60%);*/
 		}
+
 
 		loaderr {
  	 		position: relative;
@@ -272,7 +275,20 @@
 			color: #AAA;
 		}
 
+		::-webkit-scrollbar {
+			width: 7px;
+			background-attachment: fixed;
+			background: #000000;
+		}
 
+		::-webkit-scrollbar-thumb {
+  		background: #AAA;
+  		border-radius: 7px;
+		}
+
+		::-webkit-scrollbar-thumb:hover {
+  		background: #FFF;
+		}
 
 	</style>
 	<script type="text/javascript">
@@ -467,6 +483,7 @@
 <body>
 	<div class="body">
 		<h1>Music from Sratch-discuss</h1>
+		<a href="https://agzam4.github.io/Scratch-Beepbox/">Scratch-Beepbox Directory</a>
 		<br>
 		<div>
 			<iframe id="iframe-player" src="" style="display: none;"></iframe>
