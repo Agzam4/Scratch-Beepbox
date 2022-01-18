@@ -290,6 +290,20 @@
   		background: #FFF;
 		}
 
+		.inputtext {
+			padding: 5px 15px 5px 15px;
+			display: block;
+			background: #222;
+    		box-shadow: 0px -2px 0px 0px #CCC inset;
+    		transition: .2s ease-in-out;
+		}
+
+		.input:hover > .inputtext {
+			background: #333;
+    		box-shadow: inset 0px -2px 0px #FFFFFF;
+    		filter: brightness(1.5);
+		}
+
 	</style>
 	<script type="text/javascript">
 		function loadAll() {
@@ -492,8 +506,14 @@
 		<br>
 		<div class="form">
 			<div class="inputbox">
-				<div class="input"><input id="discuss-url" type="text" placeholder="discuss url" value="https://scratch.mit.edu/discuss/topic/559635/"></div>
-				<div class="input"><input id="discuss-page" type="number" placeholder="page" value="1"></div>
+				<div class="input">
+					<div class="inputtext">Url:</div>
+					<input id="discuss-url" type="text" placeholder="discuss url" value="https://scratch.mit.edu/discuss/topic/559635/">
+				</div>
+				<div class="input">
+					<div class="inputtext">Page:</div>
+					<input id="discuss-page" type="number" placeholder="page" value="1">
+				</div>
 			</div>
 			<div class="buttonbox">
 				<button onclick="loadAll()">OK</button>
