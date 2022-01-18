@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Discuss parsing</title>
+	<style type="text/css">
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: sans-serif;
+			color: #EEE;
+			background-attachment: fixed;
+			background-image: linear-gradient(175deg,
+				hsl(223deg 68% 6%) 0%,
+				hsl(219deg 100% 16%) 37%,
+				hsl(223deg 100% 28%) 45%,
+				hsl(233deg 81% 44%) 49%,
+				hsl(266deg 100% 50%) 50%,
+				hsl(270deg 100% 51%) 50%,
+				hsl(274deg 100% 53%) 50%,
+				hsl(277deg 100% 55%) 50%,
+				hsl(280deg 100% 57%) 50%,
+				hsl(275deg 68% 46%) 50%,
+				hsl(271deg 63% 33%) 53%,
+				hsl(267deg 60% 20%) 59%,
+				hsl(277deg 100% 6%) 86%);
+		}
+
+		.body {
+			padding: 10px 20px 10px 70px;
+		}
+
+		.player {
+    		display: inline-flex;
+    		border: 3px #CCC solid;
+    		width: 90%;
+    		height: fit-content;
+    		border-radius: 15px;
+    		padding: 20px 20px;
+    		margin: auto;
+    		background: #00000060;
+    		background-attachment: fixed;
+    		background-blend-mode: color-burn;
+			animation: show 2.5s forwards;
+		}
+
+		playbutton {
+			display: inline-block;
+			background: #111;
+			padding: 10px;
+    		border-radius: 5px;
+    		padding: 10px 10px;
+    		height: 50px;
+    		width: 50px;
+
+    		background-attachment: fixed;
+			background-image: linear-gradient(
+    			10deg, hsl(210deg 100% 50%) 0%, hsl(280deg 100% 50%) 70%);
+			box-shadow: none;
+			transition: .3s ease-in-out;
+		}
+
+		playbutton:hover {
+			filter: hue-rotate(-20deg);
+			box-shadow: 0 0 0px 3px hsl(250deg 100% 70%);
+		}
+
+		playbutton:hover > arrow {
+			color: #EEE;
+		}
+
+		arrow {
+			display: block;
+  			width: 0px; 
+  			height: 0px; 
+    		border: 25px solid black;
+    		border-top-color: #FFF;
+    		border-right-color: #00000000;
+    		border-bottom-color: #00000000;
+    		border-left-color: #00000000;
+    		transform: translateX(calc(50% - 9px)) rotate(-90deg);
+    		z-index: 999;
+			transition: .5s ease-in-out;
+		}
+
+		.info {
+    		padding: 0px 20px;
+    		display: flex;
+    		flex-direction: column;
+    		width: 100%;
+    		/*padding: 0px 0px 0px 20px;
+			display: inline-block;*/
+		}
+
+		.info > .music-name {
+			font-size: 150%;
+		}
+
+		iframe {
+    		width: calc(90% + 40px);
+    		height: auto;
+   		 	border-radius: 5px;
+    		border: 3px #000 solid;
+			animation: show 2.5s forwards;
+		}
+
+		@keyframes show {
+  			0% {
+  				opacity: 0;
+  			}
+
+  			100% {
+  				opacity: 1;
+  			}
+		}
+
+		input, button {
+    		padding: 5px 10px;
+    		box-shadow: inset 0px -2px 0px #FFFFFF50;
+    		background-attachment: fixed;
+    		background: #111; /*linear-gradient(175deg, #03112c 1%, #13001f 60%);*/
+    		font-size: 120%;
+    		width: auto;
+    		/*text-shadow: 0px 0px 30px #ef8aff;*/
+    		color: #BBB;
+    		border: none;
+    		outline: none;
+    		transition: .2s ease-in-out;
+		}
+
+		input:hover {
+    		color: #EEE;
+    		box-shadow: inset 0px -2px 0px #EEE;
+		}
+
+		button:hover, input:focus {
+    		box-shadow: inset 0px -2px 0px #FFFFFF;
+    		filter: brightness(2.0);
+		}
+
+		button:disabled {
+    		color: #999;
+    		background: #555;
+    		opacity:  .5;
+    		filter: brightness(1.0) !important;
+    		box-shadow: inset 0px -2px 0px #FFFFFF50 !important;
+		}
+
+
+		loadingbox {
+ 	 		position: relative;
+ 	 		display: inline-flex;
+			width: calc(90% + 6px);
+  			height: 40vh;
+
+  			height: 40vh;
+    		background: #00000030;
+    		padding: 10px;
+    		box-shadow: 0px 0px 3px 0px #00000080;
+    		border-radius: 15px;
+    		border: 3px #EEEEEE33 solid;
+   			padding: 20px 20px;
+		}
+
+		loading {
+    		position: absolute;
+    		display: block;
+    		height: 60px;
+    		width: 60px;
+    		border: 3px solid transparent;
+    		border-top-color: #FFF;
+    		top:0;
+    		bottom: 0;
+    		left: 0;
+    		right: 0;
+    		margin: auto;
+    		border-radius: 50%;
+    		animation: spin 2s linear infinite;
+		}
+
+		loading:before, loading:after{
+			content:'';
+      		position: absolute;
+      		border: 3px solid transparent;
+      		border-radius: 50%;
+    	}
+    
+    	loading:before{
+      		border-top-color: #0090FF;
+      		top: -12px;
+      		left: -12px;
+      		right: -12px;
+      		bottom: -12px;
+      		animation: spin 3s linear infinite;
+    	}
+    
+    	loading:after{
+      		border-top-color: #9000FF;
+      		top: 6px;
+      		left: 6px;
+      		right: 6px;
+      		bottom: 6px;  
+      		animation: spin 4s linear infinite;
+    	}
+
+		@keyframes spin{
+  			0% {
+  				transform: rotate(0deg);
+  			}
+  			100% {
+  				transform: rotate(360deg);
+  			}
+		}
+
+		.form {
+ 	 		position: relative;
+ 	 		display: inline-flex;
+			width: calc(90% + 20px);
+    		background: #FFFFFF30;
+    		box-shadow: 0px 0px 3px 0px #00000080;
+    		border-radius: 15px;
+    		border: 3px #EEEEEE33 solid;
+   			padding: 10px 10px;
+   			border-radius: 5px;
+   			/*background: linear-gradient(175deg, #03112c 1%, #13001f 60%);*/
+		}
+
+		loaderr {
+ 	 		position: relative;
+ 	 		display: inline-flex;
+			width: 90%;
+    		background: #FF000030;
+    		box-shadow: 0px 0px 3px 0px #00000080;
+    		border: 3px #EE000033 solid;
+    		border-radius: 15px;
+   			padding: 10px 20px;
+   			border-radius: 5px;
+		}
+
+		.inputbox {
+ 	 		display: inline-flex;
+ 	 		width: 100%;
+		}
+
+		.input {
+ 	 		display: inline-flex;
+			width: 100%;
+			padding: 0px 10px 0px 0px;
+		}
+
+		input {
+			width: 100%;
+		}
+
+		#discuss-page {
+			/*width: 25%;*/
+		}
+
+		a {
+			text-decoration: none;
+			color: #2196f3;
+			transition: .3s ease-in-out;
+		}
+
+		a:hover {
+			filter: brightness(1.5);
+			text-shadow: 0 0 15px #2196f3;
+		}
+
+		.author {
+			color: #AAA;
+		}
+
+
+
+	</style>
+	<script type="text/javascript">
+		function loadAll() {
+			let discussUrlInput = document.getElementById('discuss-url');
+			let discussPageInput = document.getElementById('discuss-page');
+
+			let discussUrl = discussUrlInput.value;
+			let discussPage = discussPageInput.value;
+
+			if(discussPage.length == 0) discussPage = "1";
+			if(discussPage < 1) discussPage = "1";
+			discussPage = Math.round(discussPage);
+			discussPageInput.value = discussPage;
+
+			discussUrl = discussUrl.replace("https://scratch.mit.edu/discuss/topic/", "");
+			discussUrl = discussUrl.replaceAll("/", "");
+			discussUrl = "https://scratch.mit.edu/discuss/topic/" + discussUrl + "/";
+			discussUrlInput.value = discussUrl;
+
+			let url = discussUrl + "?page=" + discussPage
+			console.log("Loading " + url);
+
+			let main = document.getElementById('main');
+			main.innerHTML = "<loadingbox><loading></loading></loadingbox>";
+
+			load(url).then(loaded => {
+				loadMain(loaded, url, true);
+				document.getElementById('previous-page').disabled = discussPage < 2;
+			});
+		}
+
+		function loadMain(loaded, url, restartIfErr) {
+			let main = document.getElementById('main');
+			let html = document.createElement('html');
+			html.innerHTML = loaded;
+			let body = html.getElementsByTagName("body")[0];
+
+			let blockquotes = body.getElementsByTagName("blockquote");
+			for (var i = 0; i < blockquotes.length; i++) {
+				blockquotes[i].innerHTML = "";
+			}
+
+			if(body == undefined || body.innerText == "undefined") {
+				if(restartIfErr) {
+					console.log("Loading err...");
+					load(url.replace("https://", "https://cors.9gr.repl.co/")).then(loaded => {
+					console.log("Restarting...");
+						loadMain(loaded, url, false);
+					});
+				}
+				return;
+			}
+			console.log(body);
+
+			let newHtml = "";
+			let postsBoxs = body.getElementsByClassName("blockpost");
+			for (var i = 0; i < postsBoxs.length; i++) {
+				let postBox = postsBoxs[i];
+				let author = postBox.getElementsByClassName("username")[0].innerText;
+				let post = postBox.getElementsByClassName("post_body_html")[0];
+
+				let links = post.getElementsByTagName("a");
+				for (var j = 0; j < links.length; j++) {
+					if(isAllowedLink(links[j])) {
+						fixLink(links[j]);
+						newHtml += createPlayer(links[j], author) + "<br><br><br>";
+					}else {
+						console.log("NOT ALLOWED LINK: " + links[j].href);
+					}
+				}
+					//newHtml += 
+					//"<br><br><h1>" + author 
+					//+ "</h1><br><div class='post_body_html'>" + post.innerHTML + "</div>";
+			}
+			if(newHtml.length == 0) {
+				newHtml = "<loaderr>Music links not found</loaderr>";
+			}
+			main.innerHTML = newHtml;
+
+			document.getElementById('pages').style.display = "block";
+		}
+
+		let allowedLinks = [
+			"https://www.beepbox.co/",
+			"https://beepbox.co/", 
+			"https://jummbus.bitbucket.io/",
+			"https://pandoras-box.thurm64.repl.co/"
+		];
+
+		function isAllowedLink(aLink) {
+			for (var i = 0; i < allowedLinks.length; i++) {
+				if(aLink.href.startsWith(allowedLinks[i])) return true;
+			}
+			return false;
+		}
+
+		function fixLink(aLink) {
+			let url = aLink.href;
+			let index = -1;
+			for (var i = 0; i < allowedLinks.length; i++) {
+				if(url.startsWith(allowedLinks[i])) {
+					index = i;
+					break;
+				};
+			}
+			url = url.replace(allowedLinks[index], "");
+			if(url.startsWith("#")) {
+				url = url.replace("#", "");
+			}
+
+			if(!url.startsWith("player")) {
+				aLink.href = allowedLinks[index] + "player/#song=" + url;
+			}
+		}
+
+		function createPlayer(aLink, author) {
+			if(aLink == undefined) return "";
+			return `
+				<div class="player">
+					<playbutton class="play-button" onClick='play("` + aLink.href + `")'>
+						<arrow></arrow>
+					</playbutton>
+					<div class="info">
+						<a class="music-name" href="
+						` + aLink.href + `">` + aLink.innerText + `</a>
+						<a href="https://scratch.mit.edu/users/` + author + `" class="author">by ` + author + `</a>
+					</div>
+				</div>
+			`;
+		}
+
+		function play(url) {
+			console.log("PLAY: " + url);
+			let player = document.getElementById("iframe-player");
+			document.getElementById("iframe-player").src = url;
+
+			console.log("PLAY (src): " + player.src);
+			player.style.display = "block";
+
+  			const offsetTop = player.offsetTop - 20;
+
+  			scroll({
+    			top: offsetTop,
+    			behavior: "smooth"
+  			});
+		}
+
+		function load(url) {
+        	return fetch(url).then(response => response.text())
+				.catch((e) => {
+            	console.log('Error: ' + e.message);
+            	console.log(e.response);
+        	});
+		}
+
+		function previousPage() {
+			let discussUrlInput = document.getElementById('discuss-url');
+			let discussPageInput = document.getElementById('discuss-page');
+
+			let discussUrl = discussUrlInput.value;
+			let discussPage = discussPageInput.value;
+
+			if(discussPage.length == 0) discussPage = "1";
+			if(discussPage < 1) discussPage = "1";
+			discussPage = Math.round(discussPage);
+			discussPage--;
+			if(discussPage > 0) {
+				discussPageInput.value = discussPage;
+				loadAll();
+			}
+		}
+
+		function nextPage() {
+			let discussUrlInput = document.getElementById('discuss-url');
+			let discussPageInput = document.getElementById('discuss-page');
+
+			let discussUrl = discussUrlInput.value;
+			let discussPage = discussPageInput.value;
+
+			if(discussPage.length == 0) discussPage = "1";
+			if(discussPage < 1) discussPage = "1";
+			discussPage = Math.round(discussPage);
+			discussPage++;
+			discussPageInput.value = discussPage;
+
+			loadAll();
+		}
+
+	</script>
+</head>
+<body>
+	<div class="body">
+		<h1>Music from Sratch-discuss</h1>
+		<br>
+		<div>
+			<iframe id="iframe-player" src="" style="display: none;"></iframe>
+		</div>
+		<br>
+		<br>
+		<div class="form">
+			<div class="inputbox">
+				<div class="input"><input id="discuss-url" type="text" placeholder="discuss url" value="https://scratch.mit.edu/discuss/topic/559635/"></div>
+				<div class="input"><input id="discuss-page" type="number" placeholder="page" value="1"></div>
+			</div>
+			<div class="buttonbox">
+				<button onclick="loadAll()">OK</button>
+			</div>
+		</div>
+		<br>
+		<br>
+		<br>
+		<div id="main">
+			<!-- <div class="player">
+				<playbutton class="play-button" onClick="play('link')">
+					<arrow></arrow>
+				</playbutton>
+				<div class="info">
+					<a href="">Link</a>
+					<div class="author">Link</div>
+				</div>
+			</div> -->
+		</div>
+		<br>
+		<br>
+		<div class="form" id="pages" style="display: none;">
+			<div class="buttonbox">
+			</div>
+			<button id="previous-page" onclick="previousPage()">Previous page</button>
+			<button id="next-page" onclick="nextPage()">Next page</button>
+		</div>
+		<br>
+		<br>
+
+
+		<!-- <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br> -->
+		<!-- https://scratch.mit.edu/discuss/topic/559635/ -->
+	</div>
+</body>
+</html>
