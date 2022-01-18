@@ -306,6 +306,53 @@
 
 	</style>
 	<script type="text/javascript">
+
+		window.onload = function() {
+			
+    		loadFromUrl();
+
+			addEventListener("popstate",function(e) {
+    			loadFromUrl();
+			},false);
+		}
+
+
+		function loadFromUrl() {
+			let pageUrl = window.location.href;
+			let startDataIndex = pageUrl.lastIndexOf("?");
+			let isUrlFound = false;
+			let isPageFound = false;
+			if(startDataIndex != -1) {
+				let urlData = pageUrl.substring(startDataIndex+1, pageUrl.length);
+				urlData = urlData.split("&");
+				console.log("URL DATA: " + urlData);
+				for (var i = 0; i < urlData.length; i++) {
+					let data = urlData[i].split("=");
+					console.log("URL DATA: " + data[0] + ": " + data[1]);
+					if(data[0] == "discuss" && data[1] != undefined) {
+						data[1] = data[1].replace("https://scratch.mit.edu/discuss/topic/", "");
+						data[1] = data[1].replaceAll("/", "");
+						data[1] = "https://scratch.mit.edu/discuss/topic/" + data[1] + "/";
+						document.getElementById('discuss-url').value = data[1];
+						console.log("New discuss url: " + data[1]);
+						isUrlFound = true;
+					}
+					if(data[0] == "page" && data[1] != undefined) {
+						if(data[1].length == 0) data[1] = "1";
+						if(data[1] < 1) data[1] = "1";
+						data[1] = Math.round(data[1]);
+						document.getElementById('discuss-page').value = data[1];
+						console.log("New discuss url: " + data[1]);
+						isPageFound = true;
+					}
+				}
+			}
+			if(isUrlFound && isPageFound) {
+				loadAll();
+			}
+		}
+
+
 		function loadAll() {
 			let discussUrlInput = document.getElementById('discuss-url');
 			let discussPageInput = document.getElementById('discuss-page');
@@ -320,6 +367,7 @@
 
 			discussUrl = discussUrl.replace("https://scratch.mit.edu/discuss/topic/", "");
 			discussUrl = discussUrl.replaceAll("/", "");
+			let discussUrlID = discussUrl;
 			discussUrl = "https://scratch.mit.edu/discuss/topic/" + discussUrl + "/";
 			discussUrlInput.value = discussUrl;
 
@@ -332,6 +380,13 @@
 			load(url).then(loaded => {
 				loadMain(loaded, url, true);
 				document.getElementById('previous-page').disabled = discussPage < 2;
+
+				let newUrl = location.protocol + '//' + location.host + location.pathname 
+				+ "?discuss=" + discussUrlID + "&page=" + discussPage;
+
+				if(window.location.href != newUrl) {
+					window.history.pushState(null, document.title, newUrl);
+				}
 			});
 		}
 
@@ -498,6 +553,7 @@
 	<div class="body">
 		<h1>Music from Sratch-discuss</h1>
 		<a href="https://agzam4.github.io/Scratch-Beepbox/">Scratch-Beepbox Directory</a>
+		<br>
 		<br>
 		<div>
 			<iframe id="iframe-player" src="" style="display: none;"></iframe>
