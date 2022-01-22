@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="shortcut icon" href="/Scratch-Beepbox/favicon.png">
-	<title>Discuss parsing</title>
+	<title>Sratch-Discuss | parsing</title>
 	<style type="text/css">
 		body {
 			margin: 0;
@@ -28,22 +28,29 @@
 				hsl(277deg 100% 6%) 86%);
 		}
 
+		/*linear-gradient(  35deg,  hsl(284deg 100% 50%) 1%,  hsl(277deg 99% 53%) 39%,  hsl(270deg 98% 57%) 47%,  hsl(263deg 97% 60%) 50%,  hsl(256deg 96% 64%) 51%,  hsl(249deg 94% 67%) 51%,  hsl(242deg 92% 71%) 50%,  hsl(235deg 90% 74%) 49%,  hsl(228deg 86% 77%) 49%,  hsl(221deg 82% 80%) 50%,  hsl(214deg 76% 84%) 53%,  hsl(207deg 67% 87%) 61%,  hsl(200deg 53% 90%) 99%)*/
+
 		.body {
 			padding: 10px 20px 10px 70px;
 		}
 
 		.player {
     		display: inline-flex;
-    		border: 3px #CCC solid;
+    		border: 3px #BBB solid/*dashed*/;
     		width: 90%;
     		height: fit-content;
     		border-radius: 15px;
     		padding: 20px 20px;
     		margin: auto;
-    		background: #00000060;
+    		background: #00000040;
     		background-attachment: fixed;
     		background-blend-mode: color-burn;
 			animation: show 2.5s forwards;
+		}
+
+		.followed {
+    		border: 3px #FFF solid;
+    		background:  #00000060;
 		}
 
 		playbutton {
@@ -304,6 +311,25 @@
     		filter: brightness(1.5);
 		}
 
+		#nowplaying {
+      		animation: show 2.5s forwards;
+      		color: #CCC;
+    		transition: .2s ease-in-out;
+    		cursor: pointer;
+		}
+
+		#nowplaying:hover {
+			color: #FFF;
+			text-shadow: 0px 0px 5px #FFF;
+		}
+
+		follow {
+			cursor: pointer;
+			display: inline-block;
+			background: #CCC;
+			padding: 3px 5px;
+		}
+
 	</style>
 	<script type="text/javascript">
 
@@ -443,8 +469,9 @@
 
 		let allowedLinks = [
 			"https://www.beepbox.co/",
-			"http://beepbox.co/", 
+			"http://www.beepbox.co/",
 			"https://beepbox.co/", 
+			"http://beepbox.co/", 
 			"https://jummbus.bitbucket.io/"
 		];
 
@@ -476,9 +503,11 @@
 
 		function createPlayer(aLink, author) {
 			if(aLink == undefined) return "";
+			// let isFollow = followList.includes(author);
 			return `
 				<div class="player">
-					<playbutton class="play-button" onClick='play("` + aLink.href + `")'>
+					<playbutton class="play-button" onClick='play(this, "`
+					 + aLink.innerText +  `", "` + aLink.href + `")'>
 						<arrow></arrow>
 					</playbutton>
 					<div class="info">
@@ -490,20 +519,41 @@
 			`;
 		}
 
-		function play(url) {
+		function play(link, name, url) {
 			console.log("PLAY: " + url);
 			let player = document.getElementById("iframe-player");
-			document.getElementById("iframe-player").src = url;
+			let nowPlaying = document.getElementById("nowplaying");
+			player.src = url;
 
-			console.log("PLAY (src): " + player.src);
 			player.style.display = "block";
+			nowPlaying.style.display = "block";
+			nowPlaying.innerText = name;
 
-  			const offsetTop = player.offsetTop - 20;
+  			const offsetTop = nowPlaying.offsetTop - 20;
 
   			scroll({
     			top: offsetTop,
     			behavior: "smooth"
   			});
+
+  			let playBox = link.parentElement;
+  			console.log(link.parentElement);
+  			nowPlaying.onclick = function() {
+  				const offsetTop = playBox.offsetTop - 20;
+  				scroll({
+    				top: offsetTop,
+    				behavior: "smooth"
+  				});
+  			}
+
+  			let allPlayBoxes = document.body.getElementsByClassName("player");
+  			for (var i = 0; i < allPlayBoxes.length; i++) {
+  				allPlayBoxes[i].style.borderColor = "#BBB";
+  				allPlayBoxes[i].style.filter = "none";
+  			}
+
+  			playBox.style.borderColor = "#9c00ff";
+  			playBox.style.filter = "grayscale(1)";
 		}
 
 		function load(url) {
@@ -547,6 +597,28 @@
 			loadAll();
 		}
 
+		// let followList = [];
+
+		// if(localStorage.follow == undefined) {
+		// 	localStorage.follow = [];
+		// 	followList = [];
+		// 	console.log(followList);
+		// }else {
+		// 	followList = localStorage.follow.split(",");
+		// 	console.log(followList);
+		// }
+
+		// function follow(user) {
+		// 	let index = followList.indexOf(user);
+		// 	console.log(index);
+		// 	if(index == -1) {
+		// 		followList.push(user);
+		// 	}else {
+		// 		followList = followList.filter(item => user != item);
+		// 	}
+		// 	localStorage.follow = followList;
+		// 	console.log(followList);
+		// }
 	</script>
 </head>
 <body>
@@ -555,6 +627,7 @@
 		<a href="https://agzam4.github.io/Scratch-Beepbox/">Scratch-Beepbox Directory</a>
 		<br>
 		<br>
+		<h2 id="nowplaying" style="display: none;"></h2>
 		<div>
 			<iframe id="iframe-player" src="" style="display: none;"></iframe>
 		</div>
