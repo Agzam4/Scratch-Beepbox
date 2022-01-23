@@ -3,6 +3,10 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="Access-Control-Allow-Origin" content="*">
+	<meta name="description" content = "Directory of beepbox music">
+	<meta name = "keywords" content = "Directory, Beepbox, Scratch, Agzam4, Music, Songs">
+	<meta name="author" content="Agzam4">
+
 	<title>Scratch-Beepbox</title>
 	<link rel="shortcut icon" href="/Scratch-Beepbox/favicon.png">
 	<style type="text/css">
@@ -697,10 +701,10 @@ let response = await fetch('https://api.scratch.mit.edu/projects/628533426/', {
 
         			if(songUrl.startsWith("https://jummbus.bitbucket.io/") 
         				|| 	songUrl.startsWith("https://www.beepbox.co/") 
-        				||	songUrl.startsWith("https://beepbox.co/") 
+        				||	songUrl.startsWith("http://beepbox.co/") 
         				) {
 
-        				let songData = songUrl.replace("https://", "");
+        				let songData = songUrl.replace("https://", "").replace("http://", "");
         				console.log("songUrl: " + songUrl);
         				console.log("songData: " + songData);
         				if(songData.startsWith("www.")) {
@@ -710,7 +714,12 @@ let response = await fetch('https://api.scratch.mit.edu/projects/628533426/', {
         					songData = songData.replace("beepbox.co", "");
         				}
         				if(songData.startsWith("jummbus.bitbucket.io")) songData = songData.replace("jummbus.bitbucket.io", "");
-        				if(songData.startsWith("/#")) songData = songData.replace("/#", "");
+        				
+        				console.log("$ " + songData);
+        				if(songData.startsWith("/player/")) songData = songData.replace("/player/", "");
+								if(songData.startsWith("#song=")) songData = songData.replace("#song=", "");
+								if(songData.startsWith("/#")) songData = songData.replace("/#", "");
+								if(songData.startsWith("#")) songData = songData.replace("#", "");
 
         				let player = "";
 
