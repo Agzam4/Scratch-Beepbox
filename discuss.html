@@ -3,8 +3,22 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content = "Parsing beepbox-music from Sratch-Discuss">
+	<meta name="keywords" content = "Parsing, Beepbox, Scratch, Agzam4, Music, Songs">
+	<meta name="author" content="Agzam4">
+
+	<meta property="og:title" content="Sratch-Discuss | Parsing beepbox-music">
+	<meta property="og:description" content="Parsing beepbox-music from Sratch-Discuss">
+	<meta property="og:image" content="https://repository-images.githubusercontent.com/448322284/0782d27a-573a-44d8-a815-c99a4586c703">
+	<meta property="og:url" content="https://agzam4.github.io/Scratch-Beepbox/discuss"/>
+
+	<meta name="twitter:title" content="Sratch-Discuss | Parsing beepbox-music">
+	<meta name="twitter:description" content="Parsing beepbox-music from Sratch-Discuss"">
+	<meta name="twitter:image" content="https://repository-images.githubusercontent.com/448322284/0782d27a-573a-44d8-a815-c99a4586c703">
+
 	<link rel="shortcut icon" href="/Scratch-Beepbox/favicon.png">
-	<title>Sratch-Discuss | parsing</title>
+	<title>Sratch-Discuss | Parsing beepbox-music</title>
 	<style type="text/css">
 		body {
 			margin: 0;
@@ -448,6 +462,7 @@
 
 				let links = post.getElementsByTagName("a");
 				for (var j = 0; j < links.length; j++) {
+					console.log("innerText: " + links[j].innerText)
 					if(isAllowedLink(links[j])) {
 						fixLink(links[j]);
 						newHtml += createPlayer(links[j], author) + "<br><br><br>";
@@ -492,13 +507,17 @@
 				};
 			}
 			url = url.replace(allowedLinks[index], "");
-			if(url.startsWith("#")) {
-				url = url.replace("#", "");
-			}
 
-			if(!url.startsWith("player")) {
+
+        	if(url.startsWith("player/")) url = url.replace("player/", "");
+			if(url.startsWith("#song=")) url = url.replace("#song=", "");
+			if(url.startsWith("/#")) url = url.replace("/#", "");
+			if(url.startsWith("#")) url = url.replace("#", "");
+
+			console.log("$ " + allowedLinks[index] + "player/#song=" + url);
+			// if(!url.startsWith("player")) {
 				aLink.href = allowedLinks[index] + "player/#song=" + url;
-			}
+			// }
 		}
 
 		function createPlayer(aLink, author) {
@@ -507,7 +526,7 @@
 			return `
 				<div class="player">
 					<playbutton class="play-button" onClick='play(this, "`
-					 + aLink.innerText +  `", "` + aLink.href + `")'>
+					 + aLink.innerText.replaceAll("'", "").replaceAll('"', "") +  `", "` + aLink.href + `")'>
 						<arrow></arrow>
 					</playbutton>
 					<div class="info">
