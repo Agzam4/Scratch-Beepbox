@@ -537,6 +537,7 @@
 
         let cloutStart = 0;
         let cloudUsers = [];
+        let cloudUsersPrjects = [];
 
         function loadmore() {
         	cloudLoad(10);
@@ -561,17 +562,17 @@
         			let info = json[i];
         			let name = info.user;
         			let value = info.value;
-        			if(cloudUsers.indexOf(name) == -1) {
+        			if(cloudUsers.indexOf(name) == -1 && cloudUsersPrjects.indexOf(value) == -1) {
 						try {
-							console.log("Cloud Loading " + value + "...");
         					load('api.scratch.mit.edu/projects/' + value + '/').then(loaded => {
         						let pJson = JSON.parse(loaded.toString());
-								console.log("Loaded: " + pJson );
         						if(pJson.code != "NotFound") {
         							let index = pJson.description;
-        							if(index.indexOf("beepbox") != -1 || index.indexOf("jummbus.bitbucket.io") != -1) {
+        							if((index.indexOf("beepbox") != -1 || index.indexOf("jummbus.bitbucket.io") != -1)
+        								&& cloudUsersPrjects.indexOf(value) == -1) {
 										console.log("OK");
         								cloudUsers.push(name);
+        								cloudUsersPrjects.push(value);
         								let author = pJson.author.username;
         								let title = pJson.title;
         								let image = pJson.image;
