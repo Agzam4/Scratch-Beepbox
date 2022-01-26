@@ -8164,11 +8164,14 @@ var beepbox = (function (exports) {
                 let shadowSize = 0;
                 if(offsetX < timelineWidth * pos) {
                     let k = (timelineWidth * pos - offsetX)*0.01;
+                    let kk = (timelineWidth * pos - offsetX)*0.003;
                     color = makeColorBrighter(notesColorsByAgzam4[i], k + 0.25);
                     if(k > 1) k = 1;
                     if(k < 0) k = 0;
                     shadowColor = makeColorBrighter(notesColorsByAgzam4[i], k);
-                    shadowSize = 5 + k*5;
+                    if(kk > 1) kk = 1;
+                    if(kk < 0) kk = 0;
+                    shadowSize = 10 - kk*10;
                 }else{
 
                 }
