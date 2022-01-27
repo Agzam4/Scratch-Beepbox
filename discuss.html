@@ -516,7 +516,11 @@
 
 			console.log("$ " + allowedLinks[index] + "player/#song=" + url);
 			// if(!url.startsWith("player")) {
-				aLink.href = allowedLinks[index] + "player/#song=" + url;
+				if(allowedLinks[index].startsWith("http://")) {
+					aLink.href = allowedLinks[index].replace("http://", "https://") + "player/#song=" + url;
+				}else {
+					aLink.href = allowedLinks[index] + "player/#song=" + url;
+				}
 			// }
 		}
 
